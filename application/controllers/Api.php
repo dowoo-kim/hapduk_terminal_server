@@ -24,39 +24,36 @@ class Api extends CI_Controller {
 			->set_output(json_encode($data, JSON_UNESCAPED_UNICODE));
 	}
 	
-	public function get_favorite_departures()
+	public function get_favorite_city_departures()
 	{
 	}
 	
-	public function get_departures()
+	public function get_city_departures()
 	{
 		$this->db_connect();
 
 		$response_data = array();
-
-		$query = $this->db->get_where('fee', array(id => 001));
+		$query = $this->db->get_where('stop_info', array('division' => 001));
 
 		foreach ($query->result() as $row)
 		{
 			array_push($response_data, array('id' => $row->id, 'name' => $row->name));
 		}
 
-		$this->output
-			->set_content_type('application/json', 'utf-8')
-			->set_output(json_encode($response_data, JSON_UNESCAPED_UNICODE));
+		$this->output_json_format($response_data);
+
 		$this->db_disconnect();
 	}
 
-	public function get_favorite_destinations()
+	public function get_city_destinations($departure)
 	{
 	}
 
-	public function get_destination($deoarture_id)
+	public function get_intercity_destinations()
 	{
 		$this->db_connect();
 
 		$response_data = array();
-
 		$query = $this->db->get_where('stop_info', array('division !=' => 001));
 
 		foreach ($query->result() as $row)
@@ -65,18 +62,11 @@ class Api extends CI_Controller {
 		}
 		
 		$this->output_json_format($response_data);
+
 		$this->db_disconnect();
 	}
 
-	public function get_route()
-	{
-	}
-
 	public function get_stops_in_route()
-	{
-	}
-
-	public function get_time_table()
 	{
 	}
 }
