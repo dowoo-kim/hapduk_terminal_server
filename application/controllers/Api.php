@@ -25,18 +25,19 @@ class Api extends CI_Controller {
 	{
 		$this->db_connect();
 
-		$response_value = null;
+		$response_data = array();
 
-		$query = $this->db->get_where('sido', array('id' => 1, 'name' => '서울'));
+		//$query = $this->db->get_where('sido', array('id' => 1, 'name' => '서울'));
+		$query = $this->db->get_where('sido', array());
 
 		foreach ($query->result() as $row)
 		{
-			$response_value = array('name' => $row->name);
+			array_push($response_data, array('id' => $row->id, 'name' => $row->name));
 		}
 
 		$this->output
 			->set_content_type('application/json', 'utf-8')
-			->set_output(json_encode($response_value));
+			->set_output(json_encode($response_data, JSON_UNESCAPED_UNICODE));
 		$this->db_disconnect();
 	}
 
