@@ -186,24 +186,26 @@ class Api extends CI_Controller {
 		$this->db_disconnect();
 	}
 
-	public function get_fee($fee_id)
+	public function get_fee($stop_info_id)
 	{
 		$this->db_connect();
 
 		$response_data = array();
 
 		$this->db->select(array('id',
+					'name',
 					'child',
 					'teenager',
 					'adult'));
-		$this->db->from('fee');
-		$this->db->where('id', $fee_id);
+		$this->db->from('stop_info');
+		$this->db->where('id', $stop_info_id);
 		
 		$query = $this->db->get();
 
 		foreach($query->result() as $row)
 		{
-			array_push($response_data, array('fee_id' => $row->id,
+			array_push($response_data, array('stop_info_id' => $row->id,
+							'stop_info_name' => $row->name,
 							'child' => $row->child,
 							'teenager' => $row->teenager,
 							'adult' => $row->adult));
