@@ -54,14 +54,56 @@ class Api extends CI_Controller {
 		$this->db_connect();
 
 		$response_data = array();
-		$query = $this->db->get_where('stop_info', array('division !=' => 001));
+		
+		$this->db->select(array('a.id as stop_info_id',
+					'a.name as stop_info_name',
+					'b.id as division_id',
+					'b.name as division_name'));
+		$this->db->from(array('stop_info as a',
+					'division as b'));
+		$this->db->where('a.division = b.id');
+		$this->db->where('a.division != 001');
+
+		$query = $this->db->get();
 
 		foreach ($query->result() as $row)
 		{
-			array_push($response_data, array('id' => $row->id,
-							'name' => $row->name));
+			array_push($response_data, array('stop_info_id' => $row->stop_info_id,
+							'stop_info_name' => $row->stop_info_name,
+							'division_id' => $row->division_id,
+							'division_name' => $row->division_name));
 		}
 		
+		$this->output_json_format($response_data);
+
+		$this->db_disconnect();
+	}
+
+	public function get_intercity_destinations_to_division($division_id)
+	{
+		$this->db_connect();
+
+		$response_data = array();
+
+		$this->db->select(array('a.id as stop_info_id',
+					'a.name as stop_info_name',
+					'b.id as division_id',
+					'b.name as division_name'));
+		$this->db->from(array('stop_info as a',
+					'division as b'));
+		$this->db->where('a.division = b.id');
+		$this->db->where('a.division =',$division_id);
+
+		$query = $this->db->get();
+
+		foreach ($query->result() as $row)
+		{
+			array_push($response_data, array('stop_info_id' => $row->stop_info_id,
+							'stop_info_name' => $row->stop_info_name,
+							'division_id' => $row->division_id,
+							'division_name' => $row->division_name));
+		}
+
 		$this->output_json_format($response_data);
 
 		$this->db_disconnect();
