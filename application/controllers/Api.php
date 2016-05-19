@@ -77,17 +77,30 @@ class Api extends CI_Controller {
 		
 		$response_data = array();
 
-		$this->db->select('a.id as id');
-		$this->db->from('routes as a, stop_info as b, stop_info c');
+		$this->db->select(array('a.id as route_id',
+					'a.departure as departure_id',
+					'b.name as departure_name',
+					'a.destination as destination_id',
+					'c.name as destination_name',
+					'a.required as required'));
+		$this->db->from(array('routes as a',
+					'stop_info as b',
+					'stop_info as c'));
 		$this->db->where('a.departure = b.id');
 		$this->db->where('a.destination = c.id');
 		$this->db->where('a.departure = ', $departure_id);
 		$this->db->where('a.destination = ', $destination_id);
+		
 		$query = $this->db->get();
 
 		foreach ($query->result() as $row)
 		{
-			array_push($response_data, array('id' => $row->id));
+			array_push($response_data, array('route_id' => $row->route_id,
+							'departure_id' => $row->departure_id,
+							'departure_name' => $row->departure_name,
+							'destination_id' => $row->destination_id,
+							'destination_name' => $row->destination_name,
+							'required' => $row->required));
 		}
 
 		$this->output_json_format($response_data);
@@ -97,5 +110,63 @@ class Api extends CI_Controller {
 
 	public function get_stops_in_route($route_id)
 	{
+		$this->db_connect();
+
+		$response_data = array();
+
+		$this->db->select(array('a.route_id as route_id',
+					'b.departure_time as departure_time',
+					'c.id as stop_id',
+					'c.name as stop_name',
+					'a.sequence as stops_in_route_sequence'));
+		$this->db->from(array('stops_in_route as a',
+					'time_table as b',
+					'stop_info as c'));
+		$this->db->where('a.route_id = b.route_id');
+		$this->db->where('a.stop_info_id = c.id');
+		$this->db->where('a.route_id', $route_id);
+		
+		$query = $this->db->get();
+
+		foreach($query->result() as $row)
+		{
+			array_push($response_data, array('route_id' => $row->route_id,
+							'departure_time' => $row->departure_time,
+							'stop_id' => $row->stop_id,
+							'stop_name' => $row->stop_name,
+							'stops_in_route_sequence' => $row->stops_in_route_sequence));
+		}
+
+		$this->output_json_format($response_data);
+
+		$this->db_disconnect();
+	}
+
+	public function get_fee($fee_id)
+	{
+		$this->db_connect();
+
+		$response_data = array();
+
+		$this->db->select(array('id',
+					'child',
+					'teenager',
+					'adult'));
+		$this->db->from('fee');
+		$this->db->where('id', $fee_id);
+		
+		$query = $this->db->get();
+
+		foreach($query->result() as $row)
+		{
+			array_push($response_data, array('fee_id' => $row->id,
+							'child' => $row->child,
+							'teenager' => $row->teenager,
+							'adult' => $row->adult));
+		}
+
+		$this->output_json_format($response_data);
+
+		$this->db_disconnect();
 	}
 }
