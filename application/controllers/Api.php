@@ -125,6 +125,8 @@ class Api extends CI_Controller {
 		$this->db->where('a.route_id = b.route_id');
 		$this->db->where('a.stop_info_id = c.id');
 		$this->db->where('a.route_id', $route_id);
+		$this->db->order_by('b.departure_time','ASC');
+		$this->db->order_by('a.sequence','ASC');
 		
 		$query = $this->db->get();
 
