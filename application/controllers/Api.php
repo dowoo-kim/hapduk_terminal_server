@@ -112,8 +112,31 @@ class Api extends CI_Controller {
 	public function get_intercity_favorite_destinations()
 	{
 	}
+
+	public function get_route_id($departure_id, $destination_id)
+	{
+		$this->db_connection();
+
+		$response_data = array();
+
+		$this->db->select('id');
+		$this->db->from('routes');
+		$this->db->where('departure = ', $departure_id);
+		$this->db->where('destination = ', $destination_id);
+
+		$query = $this->db->get();
+
+		foreach($query->result() as $row)
+		{
+			array_push($response_data, array('route_id' => $row->id));
+		}
+
+		$this->output_json_format($response_data);
+
+		$this->db_disconnect();
+	}
 	
-	public function get_route($departure_id, $destination_id)
+	public function get_route($route_id)
 	{
 		$this->db_connect();
 		
@@ -130,8 +153,7 @@ class Api extends CI_Controller {
 					'stop_info as c'));
 		$this->db->where('a.departure = b.id');
 		$this->db->where('a.destination = c.id');
-		$this->db->where('a.departure = ', $departure_id);
-		$this->db->where('a.destination = ', $destination_id);
+		$this->db->where('a.id = ', $route_id);
 		
 		$query = $this->db->get();
 
