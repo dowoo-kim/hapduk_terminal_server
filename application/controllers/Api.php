@@ -130,13 +130,13 @@ class Api extends CI_Controller {
 					'a.sequence as stops_in_route_sequence',
 					'a.is_last_item as is_last_item',
 					'b.id as time_table_id',
-					'date_format(b.departure_time,"%h:%m") as departure_time',
+					'date_format(b.departure_time,"%H:%i") as departure_time',
 					'c.id as stop_info_id',
 					'c.name as stop_info_name',
 					'c.child as stop_info_child',
 					'c.teenager as stop_info_teenager',
 					'c.adult as stop_info_adult',
-					'date_format(c.required,"%h:%m") as stop_info_required'));
+					'date_format(c.required,"%H:%i") as stop_info_required'));
 		$this->db->from(array('stops_in_route as a',
 					'time_table as b',
 					'stop_info as c'));
